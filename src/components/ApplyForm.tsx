@@ -14,6 +14,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 
+const amountError =
+  "Maximum ISA allowance for the current tax year is £20,000.00";
+
 const ApplyForm = () => {
   const { isas, addISA } = useISAContext();
   const navigate = useNavigate();
@@ -27,7 +30,10 @@ const ApplyForm = () => {
   const schema = z.object({
     fundType: z.string().min(1, "Fund type is required"),
     paymentType: z.string().min(1, "Payment type is required"),
-    amount: z.number().min(1, "Amount must be greater than zero").max(20000),
+    amount: z
+      .number()
+      .min(1, "Amount must be greater than zero")
+      .max(20000, amountError),
     frequency: z.string().optional(),
   });
 
@@ -44,9 +50,7 @@ const ApplyForm = () => {
         isas.reduce((sum, isa) => sum + isa.amount, 0) + (amount as number);
 
       if (totalAmount > 20000) {
-        setError(
-          `Maximum ISA allowance for the current tax year is £20,000.00`
-        );
+        setError(amountError);
         return;
       }
 
@@ -64,7 +68,7 @@ const ApplyForm = () => {
       <div className="space-y-2">
         <Label htmlFor="fund-type">Choose Fund Type</Label>
         <Select value={fundType} onValueChange={setFundType}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full" aria-label="FundType">
             <SelectValue placeholder="Select a fund" />
           </SelectTrigger>
           <SelectContent>
@@ -108,7 +112,7 @@ const ApplyForm = () => {
         <div className="space-y-2">
           <Label htmlFor="frequency">Frequency</Label>
           <Select value={frequency} onValueChange={setFrequency}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full" aria-label="Frequency">
               <SelectValue placeholder="Select frequency" />
             </SelectTrigger>
             <SelectContent>
