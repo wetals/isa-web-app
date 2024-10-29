@@ -37,7 +37,9 @@ const ApplyForm = () => {
     frequency: z.string().optional(),
   });
 
-  const handleSave = () => {
+  const handleSave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
     try {
       schema.parse({
         fundType,
@@ -64,7 +66,7 @@ const ApplyForm = () => {
   };
 
   return (
-    <form className="space-y-4 max-w-2xl">
+    <form className="space-y-4 max-w-2xl" onSubmit={(e) => e.preventDefault()}>
       <div className="space-y-2">
         <Label htmlFor="fund-type">Choose Fund Type</Label>
         <Select value={fundType} onValueChange={setFundType}>
@@ -103,7 +105,6 @@ const ApplyForm = () => {
           type="number"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
-          max={20000}
           required
         />
       </div>
